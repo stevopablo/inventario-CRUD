@@ -6,23 +6,23 @@ dotenv.config()
 const inventarioSchema = new mongoose.Schema({
     nome: {
         type: String,
-        require: true
+        required: true
     },
     quantidade: {
         type: Number,
-        require: true
+        required: true
     },
     descricao: {
         type: String,
-        require: true
+        required: true
     },
     preco: {
-        type: String,
-        require: True
+        type: Number,
+        require: true
     },
     nota: {
         type: Number,
-        require: True
+        require: true
     },
     imagem: {
         data: Buffer,

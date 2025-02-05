@@ -1,0 +1,120 @@
+<!-- <!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adicionar Item ao Inventário</title>
+</head>
+<body>
+    <h1>Adicionar Item ao Inventário</h1>
+
+    <form id="uploadForm">
+        <label for="nome">Nome do Item:</label>
+        <input type="text" id="nome" name="nome" required><br>
+
+        <label for="descricao">Descrição:</label>
+        <input type="text" id="descricao" name="descricao" required><br>
+
+        <label for="imagem">Imagem:</label>
+        <input type="file" id="imagem" name="imagem" required><br>
+
+        <button type="submit">Adicionar</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const formData = new FormData();
+            formData.append('nome', document.getElementById('nome').value);
+            formData.append('descricao', document.getElementById('descricao').value);
+            formData.append('imagem', document.getElementById('imagem').files[0]);
+
+            try {
+                const response = await fetch('http://localhost:5000/inventario', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('result').innerHTML = `<p>Item adicionado com sucesso: ${JSON.stringify(data)}</p>`;
+                } else {
+                    document.getElementById('result').innerHTML = `<p>Erro ao adicionar item.</p>`;
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                document.getElementById('result').innerHTML = `<p>Erro ao conectar com o servidor.</p>`;
+            }
+        });
+    </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listar Itens do Inventário</title>
+</head>
+<body>
+    <h1>Itens do Inventário</h1>
+
+    <div id="itemList"></div>
+
+    <script>
+        // Função para buscar os itens do inventário
+        async function listarItens() {
+            try {
+                const response = await fetch('http://localhost:5000/inventario', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const itens = await response.json();
+                    exibirItens(itens);
+                    console.log(itens)
+                } else {
+                    document.getElementById('itemList').innerHTML = '<p>Erro ao carregar os itens.</p>';
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                document.getElementById('itemList').innerHTML = '<p>Erro ao conectar com o servidor.</p>';
+            }
+        }
+
+        // Função para exibir os itens na tela
+        function exibirItens(itens) {
+            const itemListElement = document.getElementById('itemList');
+            if (itens.length === 0) {
+                itemListElement.innerHTML = '<p>Não há itens no inventário.</p>';
+                return;
+            }
+
+            let htmlContent = '<ul>';
+            itens.forEach(item => {
+                htmlContent += `
+                    <li>
+                        <strong>Nome:</strong> ${item.nome}<br>
+                        <strong>Descrição:</strong> ${item.descricao}<br>
+                        <img src="${item.imagem}" alt="${item.nome}">
+                        <strong>Imagem:</strong> <img src="data:image/jpeg;base64,${item.imagem}" alt="${item.nome}" width="100" height="100"><br><br>
+                    </li>
+                `;
+            });
+            htmlContent += '</ul>';
+
+            itemListElement.innerHTML = htmlContent;
+        }
+
+        // Chama a função para listar os itens quando a página for carregada
+        listarItens();
+    </script>
+</body>
+</html>
